@@ -2,7 +2,7 @@ import array
 import collections
 import sys
 
-eng_freq = [ 'e','t','a','o','i','n','s','h','r','l','d','c','u','m','w','f','g','y','p','b','v','k','j','x','q','z']
+eng_freq = [ 'e','t','n','a','i','r','o','s','h','l','d','c','u','m','g','f','p','w','y','b','v','k','x','j','q','z']
 file = open("real-ciphertext.txt")
 freq = collections.defaultdict(int)
 
