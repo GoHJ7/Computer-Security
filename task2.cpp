@@ -1,4 +1,5 @@
 #include <openssl/bn.h>
+#include <openssl/err.h>
 #include <string>
 #include <iostream>
 #include <cstring>
@@ -9,10 +10,11 @@ int main(){
     BIGNUM* hex_p = BN_new();
     BIGNUM* hex_q = BN_new();
     BIGNUM* hex_e = BN_new();
+    BIGNUM* hex_d = BN_new();
 
-    BN_dec2bn(&hex_p,"0xF7E75FDC469067FFDC4E847C51F452DF");
-    BN_dec2bn(&hex_q,"0xE85CED54AF57E53E092113E62F436F4F");
-    BN_dec2bn(&hex_e,"0x0D88C3");
+    BN_hex2bn(&hex_p,"F7E75FDC469067FFDC4E847C51F452DF");
+    BN_hex2bn(&hex_q,"E85CED54AF57E53E092113E62F436F4F");
+    BN_hex2bn(&hex_e,"0D88C3");
     /*
     what i've learned
     You can decrypt the original message using public key or private key.
@@ -41,5 +43,26 @@ int main(){
    Find out d with known p,q,e
    */
 
-  
+   /*
+   g++ -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -lssl -lcrypto task2.cpp -o task2
+   */
+    BIGNUM *n = BN_new();
+    BN_CTX *ctx = BN_CTX_new();
+    BN_sub_word(hex_p,1);
+    BN_sub_word(hex_q,1);
+    BN_mul(n,hex_p,hex_q,ctx);
+
+    if (BN_mod_inverse(hex_d, hex_e, n, BN_CTX_new()) == NULL){
+        printf("Error: %s\n", ERR_error_string(ERR_get_error(), NULL));
+        return 1;
+    }
+    
+    char* private_key = BN_bn2hex(hex_d);
+    cout<< "private key: "<< &private_key<<endl;
+    BN_free(hex_p);
+    BN_free(hex_q);
+    BN_free(hex_e);
+    BN_free(hex_d);
+    BN_free(n);
+    return 0;
 }
