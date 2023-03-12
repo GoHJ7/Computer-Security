@@ -22,7 +22,13 @@ mapping = collections.defaultdict(str)
 for idx in range(26):
     mapping[sorted_keys[idx]] = eng_freq[idx]
     print("cipher freq: " + sorted_keys[idx] + " plain freq: " + eng_freq[idx])
-plainfile = open("gap.txt", "w")
+keyfile = open("task1key.txt","w")
+
+for i in range (26):
+    keyfile.write(mapping[chr(97 + i)] + " ")
+keyfile.close()
+
+plainfile = open("plain.txt", "w")
 cipherfile = open("real-ciphertext.txt")
 
 gap = int(sys.argv[1])
