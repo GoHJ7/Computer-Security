@@ -47,22 +47,30 @@ int main(){
    g++ -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -lssl -lcrypto task2.cpp -o task2
    */
     BIGNUM *n = BN_new();
+    BIGNUM *phi = BN_new();
+    BIGNUM* one = BN_new();
+    BN_one(one);
+    
     BN_CTX *ctx = BN_CTX_new();
-    BN_sub_word(hex_p,1);
-    BN_sub_word(hex_q,1);
+    BN_CTX *ctx1 = BN_CTX_new();
     BN_mul(n,hex_p,hex_q,ctx);
+    BN_sub(hex_p,hex_p,one);
+    BN_sub(hex_q,hex_q,one);
+    BN_mul(phi,hex_p,hex_q,ctx1);
 
-    if (BN_mod_inverse(hex_d, hex_e, n, BN_CTX_new()) == NULL){
+    if (BN_mod_inverse(hex_d, hex_e, phi, BN_CTX_new()) == NULL){
         printf("Error: %s\n", ERR_error_string(ERR_get_error(), NULL));
         return 1;
     }
     
     char* private_key = BN_bn2hex(hex_d);
-    cout<< "private key: "<< &private_key<<endl;
-    BN_free(hex_p);
+    char* phi_ = BN_bn2hex(phi);
+    cout<< "private key: "<< string(private_key)<<endl;
+    cout<< "phi: "<<string(phi_)<<endl;
     BN_free(hex_q);
     BN_free(hex_e);
     BN_free(hex_d);
+    BN_free(phi);
     BN_free(n);
     return 0;
 }
